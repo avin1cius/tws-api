@@ -1,7 +1,6 @@
 from ibapi.client import EClient #Outgoing messages
 from ibapi.wrapper import EWrapper #Incoming messages
 import time
-import threading
 import csv
 
 hostname = "127.0.0.1"
@@ -26,14 +25,16 @@ class IBApi(EWrapper, EClient):
         print("Disconnected from API")
         
 def main():
-    
+
+    reqId = 1;
     app = IBApi()
     try:
         while True:        
             app.connect(hostname, socket_port, 0)
             time.sleep(3)
             print(f'Connected to {hostname}:{socket_port}')
-            app.reqAccountSummary(9001, "All", "GrossPositionValue, NetLiquidation")
+            app.reqAccountSummary(reqId, "All", "GrossPositionValue, NetLiquidation")
+            reqId += 1
                
             time.sleep(3)
             app.run()
@@ -52,7 +53,7 @@ def main():
                 writer.writerow(fieldnames)
                 writer.writerows(listLeverage)
             print("Sleeping for 3 minutes\n")
-            time.sleep(10)
+            time.sleep(180)
     except KeyboardInterrupt:
         print("Bye!")
         return
